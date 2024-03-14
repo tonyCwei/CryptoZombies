@@ -21,12 +21,23 @@
   <button class="levelupButton">Level Up</button>
 
   <!-- Change Zombie Name -->
+  <div>
   <input type="text" id="zombieNameInput" value="Input New Name Here">
-  <button class="changeZombieNameButton">Change Zombie Name </button>
+  <button class="changeZombieNameButton">Change Zombie Name</button>
+  </div>
 
   <!-- Change Zombie DNA -->
+  <div>
   <input type="text" id="zombieDNAInput" pattern="\d{16}" value="Input New DNA Here" maxlength="16">
-  <button class="changeZombieDNAButton">Change Zombie DNA </button>
+  <button class="changeZombieDNAButton">Change Zombie DNA</button>
+  </div>
+
+  <!-- Transfer Zombie -->
+  <div>
+  <input type="text" id="receiverAccountInput" value="Input Receiver Account Here">
+  <button class="transferZombieButton">Confirm Zombie Transfer</button>
+  </div>
+
 
   <script>
 
@@ -43,6 +54,11 @@
     //Change Zombie DNA
     const newZombieDNA = document.getElementById('zombieDNAInput');
     const changeZombieDNAButton = document.querySelector('.changeZombieDNAButton');
+
+    // Transfter Zombie
+    const receiverAccount = document.getElementById('receiverAccountInput');
+    const transferZombieButton = document.querySelector('.transferZombieButton');
+
 
     function startApp() {
 	
@@ -198,6 +214,31 @@
         });
     }
 
+    function transferZombie(from, to, zombieId) {
+      $("#txStatus").text("Transferring your zombie...");
+      return cryptoZombies.methods.approve(from, zombieId)
+        .send({ from: userAccount })
+        .on("receipt", function(receipt) {
+          $("#txStatus").text("Approval successful. Transferring your zombie...");
+      
+          return cryptoZombies.methods.transferFrom(from, to, zombieId)
+            .send({ from: userAccount })
+            .on("receipt", function(receipt) {
+              $("#txStatus").text("Congratulations! Your zombie has been transferred.");
+              getZombiesByOwner(userAccount)
+              .then(displayZombies);
+            })
+            .on("error", function(error) {
+              $("#txStatus").text("Failed to transfer zombie.");
+            });
+        })
+        .on("error", function(error) {
+          $("#txStatus").text("Failed to approve zombie transfer.");
+      
+        });
+    }
+
+
     function getZombieDetails(id) {
       return cryptoZombies.methods.zombies(id).call()
     }
@@ -281,14 +322,14 @@
 
     //Change Zombie Name
     newZombieName.addEventListener('focus', function() {
-    // Clear the default text when user focuses on the input
+      // Clear the default text when user focuses on the input
       if (newZombieName.value === "Input New Name Here") {
         newZombieName.value = "";
       }
     });
 
     newZombieName.addEventListener('blur', function() {
-    // Restore the default text if the input is left empty
+      // Restore the default text if the input is left empty
       if (newZombieName.value === "") {
         newZombieName.value = "Input New Name Here";
       }
@@ -303,19 +344,19 @@
 
     ////Change Zombie DNA
     newZombieDNA.addEventListener('input', function(event) {
-    // Replace any non-digit characters with an empty string
+      // Replace any non-digit characters with an empty string
       this.value = this.value.replace(/\D/g, '');
     });
 
     newZombieDNA.addEventListener('focus', function() {
-    // Clear the default text when user focuses on the input
+      // Clear the default text when user focuses on the input
       if (newZombieDNA.value === "Input New DNA Here") {
         newZombieDNA.value = "";
       }
     });
 
     newZombieDNA.addEventListener('blur', function() {
-    // Restore the default text if the input is left empty
+      // Restore the default text if the input is left empty
       if (newZombieDNA.value === "") {
         newZombieDNA.value = "Input New DNA Here";
       }
@@ -327,6 +368,31 @@
         changeZombieDNA(zombieId, newZombieDNA.value);
       })
     });
+
+  //Transfer Zombie
+    receiverAccount.addEventListener('focus', function() {
+      // Clear the default text when user focuses on the input
+      if (receiverAccount.value === "Input Receiver Account Here") {
+        receiverAccount.value = "";
+      }
+    });
+
+    receiverAccount.addEventListener('blur', function() {
+      // Restore the default text if the input is left empty
+      if (receiverAccount.value === "") {
+        receiverAccount.value = "Input Receiver Account Here";
+      }
+    });
+
+    transferZombieButton.addEventListener('click', () => {
+      getZombiesByOwner(userAccount)
+      .then(function (zombieId) {
+        transferZombie(userAccount, receiverAccount.value, zombieId);
+      })
+    });
+
+
+
 
 
   </script>
