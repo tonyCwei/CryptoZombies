@@ -20,8 +20,13 @@
   <button class="createzombieButton">Create Zombie</button>
   <button class="levelupButton">Level Up</button>
 
+  <!-- Change Zombie Name -->
   <input type="text" id="zombieNameInput" value="Input New Name Here">
   <button class="changeZombieNameButton">Change Zombie Name </button>
+
+  <!-- Change Zombie DNA -->
+  <input type="text" id="zombieDNAInput" pattern="\d{16}" value="Input New DNA Here" maxlength="16">
+  <button class="changeZombieDNAButton">Change Zombie DNA </button>
 
   <script>
 
@@ -31,9 +36,13 @@
     const createzombieButton = document.querySelector('.createzombieButton');
     const levelupButton = document.querySelector('.levelupButton');
 
-
+    //Change Zombie Name
     const newZombieName = document.getElementById('zombieNameInput');
     const changeZombieNameButton = document.querySelector('.changeZombieNameButton');
+
+    //Change Zombie DNA
+    const newZombieDNA = document.getElementById('zombieDNAInput');
+    const changeZombieDNAButton = document.querySelector('.changeZombieDNAButton');
 
     function startApp() {
 	
@@ -98,7 +107,7 @@
         })
         .on("error", function (error) {
 
-          $("#txStatus").text(error);
+          $("#txStatus").text("Failed to create new zombie");
         });
     }
 
@@ -121,17 +130,31 @@
         .send({ from: userAccount, value: web3.utils.toWei("0.001", "ether") })
         .on("receipt", function (receipt) {
           $("#txStatus").text("Power overwhelming! Zombie successfully leveled up");
+          getZombiesByOwner(userAccount)
+            .then(displayZombies);
         })
         .on("error", function (error) {
-          $("#txStatus").text(error);
+          $("#txStatus").text("Failed to level up");
         });
     }
 
     function changeZombieName(zombieId, newName) {
+      // Check input
       if (newName === "Input New Name Here") {
-        $("#txStatus").text("Your zombie needs a new name!");
+        $("#txStatus").text("Please input a new name for your zombie!");
         return;
       }
+
+      // Check level to be above 2  
+      getZombieDetails(zombieId)
+          .then(function (zombie) {
+              if (zombie.level < 2 ) {
+                $("#txStatus").text("Zombie level too low! Your zombie needs to be above level 2 to change its Name.");
+                return;
+              }
+          });
+
+      // Change Name
       $("#txStatus").text("Changing the name of your zombie...");
       return cryptoZombies.methods.changeName(zombieId, newName)
         .send({ from: userAccount })
@@ -141,7 +164,37 @@
             .then(displayZombies);
         })
         .on("error", function (error) {
-          $("#txStatus").text(error);
+          $("#txStatus").text("Failed to change name");
+        });
+    }
+
+    function changeZombieDNA(zombieId, newDNA) {
+      // Check input to be 16-digit
+      if (!/^\d{16}$/.test(newDNA)) {
+        $("#txStatus").text("Please input a new DNA! The DNA has to be a 16-digit sequence!");
+        return;
+      }
+
+      // Check zombie level to be above 20
+      getZombieDetails(zombieId)
+          .then(function (zombie) {
+              if (zombie.level < 20 ) {
+                $("#txStatus").text("Zombie level too low! Your zombie needs to be above level 20 to change its DNA.");
+                return;
+              }
+          });
+
+      // Change DNA
+      $("#txStatus").text("Changing the DNA of your zombie...");
+      return cryptoZombies.methods.changeDna(zombieId, newDNA)
+        .send({ from: userAccount })
+        .on("receipt", function (receipt) {
+          $("#txStatus").text("Congrats! Your zombie's DNA has been updated");
+          getZombiesByOwner(userAccount)
+            .then(displayZombies);
+        })
+        .on("error", function (error) {
+          $("#txStatus").text("Failed to change DNA");
         });
     }
 
@@ -156,6 +209,7 @@
     function getZombiesByOwner(owner) {
       return cryptoZombies.methods.getZombiesByOwner(owner).call()
     }
+
 
     window.addEventListener('load', async () => {
     // Modern dapp browsers...
@@ -225,6 +279,7 @@
 
     });
 
+    //Change Zombie Name
     newZombieName.addEventListener('focus', function() {
     // Clear the default text when user focuses on the input
       if (newZombieName.value === "Input New Name Here") {
@@ -241,12 +296,32 @@
     
     changeZombieNameButton.addEventListener('click', () => {
       getZombiesByOwner(userAccount)
-      .then(function (result) {
-        changeZombieName(result, newZombieName.value);
+      .then(function (zombieId) {
+        changeZombieName(zombieId, newZombieName.value);
       })
     });
 
-    
+    ////Change Zombie DNA
+    newZombieDNA.addEventListener('focus', function() {
+    // Clear the default text when user focuses on the input
+      if (newZombieDNA.value === "Input New DNA Here") {
+        newZombieDNA.value = "";
+      }
+    });
+
+    newZombieDNA.addEventListener('blur', function() {
+    // Restore the default text if the input is left empty
+      if (newZombieDNA.value === "") {
+        newZombieDNA.value = "Input New DNA Here";
+      }
+    });
+
+    changeZombieDNAButton.addEventListener('click', () => {
+      getZombiesByOwner(userAccount)
+      .then(function (zombieId) {
+        changeZombieDNA(zombieId, newZombieDNA.value);
+      })
+    });
 
 
   </script>
