@@ -302,6 +302,11 @@
     });
 
     ////Change Zombie DNA
+    newZombieDNA.addEventListener('input', function(event) {
+    // Replace any non-digit characters with an empty string
+      this.value = this.value.replace(/\D/g, '');
+    });
+
     newZombieDNA.addEventListener('focus', function() {
     // Clear the default text when user focuses on the input
       if (newZombieDNA.value === "Input New DNA Here") {
