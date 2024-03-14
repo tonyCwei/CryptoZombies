@@ -20,6 +20,9 @@
   <button class="createzombieButton">Create Zombie</button>
   <button class="levelupButton">Level Up</button>
 
+  <input type="text" id="zombieNameInput" value="Input New Name Here">
+  <button class="changeZombieNameButton">Change Zombie Name </button>
+
   <script>
 
     var cryptoZombies;
@@ -27,6 +30,10 @@
     const showZombieButton = document.querySelector('.showZombieButton');
     const createzombieButton = document.querySelector('.createzombieButton');
     const levelupButton = document.querySelector('.levelupButton');
+
+
+    const newZombieName = document.getElementById('zombieNameInput');
+    const changeZombieNameButton = document.querySelector('.changeZombieNameButton');
 
     function startApp() {
 	
@@ -120,6 +127,24 @@
         });
     }
 
+    function changeZombieName(zombieId, newName) {
+      if (newName === "Input New Name Here") {
+        $("#txStatus").text("Your zombie needs a new name!");
+        return;
+      }
+      $("#txStatus").text("Changing the name of your zombie...");
+      return cryptoZombies.methods.changeName(zombieId, newName)
+        .send({ from: userAccount })
+        .on("receipt", function (receipt) {
+          $("#txStatus").text("Congrats! Your zombie is now called " + newName + "!");
+          getZombiesByOwner(userAccount)
+            .then(displayZombies);
+        })
+        .on("error", function (error) {
+          $("#txStatus").text(error);
+        });
+    }
+
     function getZombieDetails(id) {
       return cryptoZombies.methods.zombies(id).call()
     }
@@ -200,6 +225,28 @@
 
     });
 
+    newZombieName.addEventListener('focus', function() {
+    // Clear the default text when user focuses on the input
+      if (newZombieName.value === "Input New Name Here") {
+        newZombieName.value = "";
+      }
+    });
+
+    newZombieName.addEventListener('blur', function() {
+    // Restore the default text if the input is left empty
+      if (newZombieName.value === "") {
+        newZombieName.value = "Input New Name Here";
+      }
+    });
+    
+    changeZombieNameButton.addEventListener('click', () => {
+      getZombiesByOwner(userAccount)
+      .then(function (result) {
+        changeZombieName(result, newZombieName.value);
+      })
+    });
+
+    
 
 
   </script>
