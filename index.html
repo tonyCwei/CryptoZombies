@@ -4,7 +4,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>CryptoZombies front-end</title>
+  <title>CryptoZombies</title>
 <link rel="icon" href="favicon.ico">
   <script language="javascript" type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -13,30 +13,149 @@
 </head>
 
 <body>
-  <div id="txStatus"></div>
-  <div id="zombies"></div>
 
+  <style>
+    body{
+      background: linear-gradient(241.71deg, #32C5FF -23.05%, #A3BF4A 95.65%);
+        
+      }
+    
+    h1{
+        color: white; 
+        text-align:center; 
+        font-family: fantasy;
+        font-size: 3.5em;
+      }
+
+    .showZombieButton,.createzombieButton,.levelupButton,.feedOnKittyButton,.changeZombieNameButton,.changeZombieDNAButton,.transferZombieButton{
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: #FFFFFF !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 164px;
+    height: 56px;
+    background: linear-gradient(241.71deg, #32C5FF -23.05%, #A3BF4A 95.65%);
+    border-radius: 6px;
+    border-color: #e7e7e7;
+    text-decoration: none;
+    margin-left: auto;
+    margin-right: auto;
+    }
+    .container {
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      text-align: center;
+        }
+
+    .input-containermain{
+
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      text-align: center;
+      margin-top: 40px;
+
+    }  
+    
+    
+    #txStatus{
+      color: #FFFFFF;
+      font-family: cursive;
+      font-size: 50px;
+      text-align: center;
+      
+    }
+    #zombies{
+      color: #FFFFFF;
+      font-size: 20px;
+      font-family: cursive;
+      justify-content: center;
+      text-align: left;
+    }
+    table,td {
+      border-collapse: separate;
+    border-spacing: 0 10px;
+    border-radius: 10px;
+    margin-left: auto;
+    margin-right: auto;
+
+  }
+    td {
+    background: linear-gradient(241.71deg, #32C5FF -23.05%, #A3BF4A 95.65%);
+  }
+
+  .input-container {
+  display: flex;
+  align-items: center;
+  
+}
+input[type="text"] {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px; 
+}
+
+input[type="text"],
+button {
+  flex: 1; 
+}
+
+.button-container {
+  margin-left: 10px; 
+}
+  .img-zombie{
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: scale(0.8);
+  transform: translateX(-50%);
+  max-width: 100%; 
+  z-index: -1; 
+  }
+  
+  
+</style>
+
+
+<h1 id="title">
+  CryptoZombies
+</h1>
+
+
+
+
+<div class ="container">
   <button class="showZombieButton">Show Zombies</button>
   <button class="createzombieButton">Create Zombie</button>
   <button class="levelupButton">Level Up</button>
+  <button class="feedOnKittyButton">Feed Zombie On Kitty</button>
+</div>
 
-  <!-- Change Zombie Name -->
-  <div>
-  <input type="text" id="zombieNameInput" value="Input New Name Here">
-  <button class="changeZombieNameButton">Change Zombie Name</button>
+<div class="input-containermain">
+  <div class="input-container">
+    <input type="text" id="zombieNameInput" placeholder="Input New Zombie Name">
+    <button class="changeZombieNameButton">Change Zombie Name</button>
   </div>
+  <div class="input-container">
+    <input type="text" id="zombieDNAInput" placeholder="Input New Zombie DNA">
+    <button class="changeZombieDNAButton">Change Zombie DNA</button>
+  </div>
+    <div class="input-container">
+    <input type="text" id="receiverAccountInput" placeholder="Input Receiver Account">
+    <button class="transferZombieButton">Confrim Zombie Transfer</button>
+  </div>
+</div>
 
-  <!-- Change Zombie DNA -->
-  <div>
-  <input type="text" id="zombieDNAInput" pattern="\d{16}" value="Input New DNA Here" maxlength="16">
-  <button class="changeZombieDNAButton">Change Zombie DNA</button>
-  </div>
-
-  <!-- Transfer Zombie -->
-  <div>
-  <input type="text" id="receiverAccountInput" value="Input Receiver Account Here">
-  <button class="transferZombieButton">Confirm Zombie Transfer</button>
-  </div>
+<div id="txStatus"></div>
+<div id="zombies"></div>
+<img class="img-zombie" src="img\zombieimage.png" alt="zombie image">
 
 
   <script>
@@ -88,7 +207,7 @@
 
     function displayZombies(ids) {
       $("#zombies").empty();
-      for (id of ids) {
+      for (let id of ids) {
 
         getZombieDetails(id)
           .then(function (zombie) {
@@ -96,6 +215,7 @@
 
             $("#zombies").append(`<div class="zombie">
               <ul>
+                <li>ID: ${id}</li>
                 <li>Name: ${zombie.name}</li>
                 <li>DNA: ${zombie.dna}</li>
                 <li>Level: ${zombie.level}</li>
@@ -156,7 +276,7 @@
 
     function changeZombieName(zombieId, newName) {
       // Check input
-      if (newName === "Input New Name Here") {
+      if (newName === "") {
         $("#txStatus").text("Please input a new name for your zombie!");
         return;
       }
@@ -215,6 +335,11 @@
     }
 
     function transferZombie(from, to, zombieId) {
+      if (to === "") {
+        $("#txStatus").text("Please input a valid receiver account!");
+        return;
+      }
+
       $("#txStatus").text("Transferring your zombie...");
       return cryptoZombies.methods.approve(from, zombieId)
         .send({ from: userAccount })
@@ -321,19 +446,19 @@
     });
 
     //Change Zombie Name
-    newZombieName.addEventListener('focus', function() {
-      // Clear the default text when user focuses on the input
-      if (newZombieName.value === "Input New Name Here") {
-        newZombieName.value = "";
-      }
-    });
+    // newZombieName.addEventListener('focus', function() {
+    //   // Clear the default text when user focuses on the input
+    //   if (newZombieName.value === "Input New Zombie Name") {
+    //     newZombieName.value = "";
+    //   }
+    // });
 
-    newZombieName.addEventListener('blur', function() {
-      // Restore the default text if the input is left empty
-      if (newZombieName.value === "") {
-        newZombieName.value = "Input New Name Here";
-      }
-    });
+    // newZombieName.addEventListener('blur', function() {
+    //   // Restore the default text if the input is left empty
+    //   if (newZombieName.value === "") {
+    //     newZombieName.value = "Input New Zombie Name";
+    //   }
+    // });
     
     changeZombieNameButton.addEventListener('click', () => {
       getZombiesByOwner(userAccount)
@@ -348,19 +473,19 @@
       this.value = this.value.replace(/\D/g, '');
     });
 
-    newZombieDNA.addEventListener('focus', function() {
-      // Clear the default text when user focuses on the input
-      if (newZombieDNA.value === "Input New DNA Here") {
-        newZombieDNA.value = "";
-      }
-    });
+    // newZombieDNA.addEventListener('focus', function() {
+    //   // Clear the default text when user focuses on the input
+    //   if (newZombieDNA.value === "Input New Zombie DNA") {
+    //     newZombieDNA.value = "";
+    //   }
+    // });
 
-    newZombieDNA.addEventListener('blur', function() {
-      // Restore the default text if the input is left empty
-      if (newZombieDNA.value === "") {
-        newZombieDNA.value = "Input New DNA Here";
-      }
-    });
+    // newZombieDNA.addEventListener('blur', function() {
+    //   // Restore the default text if the input is left empty
+    //   if (newZombieDNA.value === "") {
+    //     newZombieDNA.value = "Input New Zombie DNA";
+    //   }
+    // });
 
     changeZombieDNAButton.addEventListener('click', () => {
       getZombiesByOwner(userAccount)
@@ -370,19 +495,19 @@
     });
 
   //Transfer Zombie
-    receiverAccount.addEventListener('focus', function() {
-      // Clear the default text when user focuses on the input
-      if (receiverAccount.value === "Input Receiver Account Here") {
-        receiverAccount.value = "";
-      }
-    });
+    // receiverAccount.addEventListener('focus', function() {
+    //   // Clear the default text when user focuses on the input
+    //   if (receiverAccount.value === "Input Receiver Account") {
+    //     receiverAccount.value = "";
+    //   }
+    // });
 
-    receiverAccount.addEventListener('blur', function() {
-      // Restore the default text if the input is left empty
-      if (receiverAccount.value === "") {
-        receiverAccount.value = "Input Receiver Account Here";
-      }
-    });
+    // receiverAccount.addEventListener('blur', function() {
+    //   // Restore the default text if the input is left empty
+    //   if (receiverAccount.value === "") {
+    //     receiverAccount.value = "Input Receiver Account";
+    //   }
+    // });
 
     transferZombieButton.addEventListener('click', () => {
       getZombiesByOwner(userAccount)
@@ -392,10 +517,10 @@
     });
 
 
-
-
-
   </script>
+
+  <script src="zombiefeeding.js"></script>
+
 </body>
 
 </html>
