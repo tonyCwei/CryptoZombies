@@ -27,7 +27,7 @@
         font-size: 3.5em;
       }
 
-    .showZombieButton,.createzombieButton,.levelupButton,.feedOnKittyButton,.changeZombieNameButton,.changeZombieDNAButton,.transferZombieButton{
+    .showZombieButton,.createzombieButton,.levelupButton,.feedOnKittyButton,.createKittyButton,.showKittyButton,.changeZombieNameButton,.changeZombieDNAButton,.transferZombieButton{
     font-style: normal;
     font-weight: 500;
     font-size: 14px;
@@ -77,6 +77,20 @@
       justify-content: center;
       text-align: left;
     }
+
+    
+    #kitties {
+      color: #FFFFFF;
+      font-size: 20px;
+      font-family: cursive;
+      justify-content: center;
+      text-align: left;
+    }
+
+
+
+
+
     table,td {
       border-collapse: separate;
     border-spacing: 0 10px;
@@ -110,15 +124,127 @@ button {
 .button-container {
   margin-left: 10px; 
 }
-  .img-zombie{
+/*  .img-zombie{
   position: fixed;
   bottom: 0;
   left: 50%;
-  transform: scale(0.8);
+  transform: scale(0.3);
   transform: translateX(-50%);
   max-width: 100%; 
   z-index: -1; 
   }
+
+  //Default image for level 11-20
+  .img.zombie-level-default {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: scale(0.3);
+  transform: translateX(-50%);
+  max-width: 100%; 
+  z-index: -1; 
+  }
+
+  .img.zombie-level-1 {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: scale(0.3);
+  transform: translateX(-50%);
+  max-width: 100%; 
+  z-index: -1; 
+  }
+
+  .img.zombie-level-2 {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: scale(0.3);
+  transform: translateX(-50%);
+  max-width: 100%; 
+  z-index: -1; 
+  }
+
+  .img.zombie-level-3 {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: scale(0.3);
+  transform: translateX(-50%);
+  max-width: 100%; 
+  z-index: -1; 
+  }
+
+  .img.zombie-level-4 {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: scale(0.3);
+  transform: translateX(-50%);
+  max-width: 100%; 
+  z-index: -1; 
+  }
+
+  .img.zombie-level-6 {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: scale(0.3);
+  transform: translateX(-50%);
+  max-width: 100%; 
+  z-index: -1; 
+  }
+
+  .img.zombie-level-6 {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: scale(0.3);
+  transform: translateX(-50%);
+  max-width: 100%; 
+  z-index: -1; 
+  }
+
+  .img.zombie-level-7 {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: scale(0.3);
+  transform: translateX(-50%);
+  max-width: 100%; 
+  z-index: -1; 
+  }
+
+  .img.zombie-level-8 {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: scale(0.3);
+  transform: translateX(-50%);
+  max-width: 100%; 
+  z-index: -1; 
+  }
+
+  .img.zombie-level-9 {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: scale(0.3);
+  transform: translateX(-50%);
+  max-width: 100%; 
+  z-index: -1; 
+  }
+
+  .img.zombie-level-10 {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: scale(0.3);
+  transform: translateX(-50%);
+  max-width: 100%; 
+  z-index: -1; 
+  }
+*/
   
   
 </style>
@@ -135,6 +261,9 @@ button {
   <button class="showZombieButton">Show Zombies</button>
   <button class="createzombieButton">Create Zombie</button>
   <button class="levelupButton">Level Up</button>
+  <!-- Kitty button -->
+  <button class="showKittyButton">Show Kitties</button>
+  <button class="createKittyButton">Create Kitty</button>
   <button class="feedOnKittyButton">Feed Zombie On Kitty</button>
 </div>
 
@@ -155,7 +284,8 @@ button {
 
 <div id="txStatus"></div>
 <div id="zombies"></div>
-<img class="img-zombie" src="img\zombieimage.png" alt="zombie image">
+<div id="kitties"></div>
+
 
 
   <script>
@@ -165,6 +295,9 @@ button {
     const showZombieButton = document.querySelector('.showZombieButton');
     const createzombieButton = document.querySelector('.createzombieButton');
     const levelupButton = document.querySelector('.levelupButton');
+    //Add Kitty button
+    const createKittyButton = document.querySelector('.createKittyButton');
+    const showKittyButton = document.querySelector('.showKittyButton');
 
     //Change Zombie Name
     const newZombieName = document.getElementById('zombieNameInput');
@@ -182,7 +315,7 @@ button {
     function startApp() {
 	
       //ZombieOwnership contratc address
-      var cryptoZombiesAddress = "0x3621E6e51F6E801dD8368d41ACA28D8e0F11C920";
+      var cryptoZombiesAddress = "0x00d29eedCf668E53Abc0E86edf0101c8B1A7cC43";
 
       cryptoZombies = new web3.eth.Contract(cryptoZombiesABI, cryptoZombiesAddress);
 
@@ -228,6 +361,38 @@ button {
       }
 
     }
+
+    // Create random kitty
+    function createRandomKitty() {
+      $("#txStatus").text("Creating new kitty on the blockchain. This may take a while...");
+      // Call the contract function here to create a new kitty
+    }
+
+    // Show kitty information
+    function displayKitties(ids) {
+      $("#kitties").empty();
+      for (let id of ids) {
+        getKittyDetails(id)
+          .then(function (kitty) {
+            $("#kitties").append(`<div class="kitty">
+              <ul>
+                <li>ID: ${id}</li>
+                <li>DNA: ${kitty.genes}</li>
+              </ul>
+            </div>`);
+          });
+      }
+    }
+
+    // Create a kitty button click event listener
+    createKittyButton.addEventListener('click', () => {
+      createRandomKitty();
+    });
+
+    // Show kitty button click event listener
+    showKittyButton.addEventListener('click', () => {
+      // Call the function to obtain kitty information and display it on the page
+    });
 
     function createRandomZombie(name) {
 
@@ -515,6 +680,42 @@ button {
         transferZombie(userAccount, receiverAccount.value, zombieId);
       })
     });
+
+
+    function displayZombies(ids) {
+      $("#zombies").empty();
+      for (let id of ids) {
+        getZombieDetails(id)
+          .then(function (zombie) {
+          // Select image path based on zombie level
+          let zombieLevel = zombie.level;
+          let zombieImageSrc;
+          let zombieClass = `zombie-level-${zombieLevel}`;
+
+          // Assign different images to zombies at levels 1 to 10
+          if (zombieLevel >= 1 && zombieLevel <= 10) {
+              zombieImageSrc = `img/zombie_level_${zombieLevel}.png`; 
+          } else {
+              zombieImageSrc = 'img/zombie_level_default.png'; 
+              zombieClass = 'zombie-level-default';
+          }
+
+          // Display zombie information and images on the page
+          $("#zombies").append(`<div class="zombie">
+            <ul>
+              <li>ID: ${id}</li>
+              <li>Name: ${zombie.name}</li>
+              <li>DNA: ${zombie.dna}</li>
+              <li>Level: ${zombie.level}</li>
+              <li>Wins: ${zombie.winCount}</li>
+              <li>Losses: ${zombie.lossCount}</li>
+              <li>Ready Time: ${zombie.readyTime}</li>
+              <li><img src="${zombieImageSrc}" alt="Zombie Level ${zombieLevel} Image" /></li>
+            </ul>
+          </div>`);
+          });
+      }
+    }
 
 
   </script>
