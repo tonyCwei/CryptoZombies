@@ -2,7 +2,7 @@
 
 Chenhao Wei, 885213686,  chenhao.wei@csu.fullerton.edu  
 Shiyun Zhou，884425810， menaxyzhou@csu.fullerton.edu  
-Huan Ying, 885193656, huany@csu.fullerton.edu
+Huan Ying, 885193656, huany@csu.fullerton.edu  
 Viditi Vartak, 6575258975, viditi08@csu.fullerton.edu
 
 Repo Link: https://github.com/tonyCwei/CryptoZombies
