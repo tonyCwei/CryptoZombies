@@ -315,7 +315,7 @@ button {
     function startApp() {
 	
       //ZombieOwnership contratc address
-      var cryptoZombiesAddress = "0x00d29eedCf668E53Abc0E86edf0101c8B1A7cC43";
+      var cryptoZombiesAddress = "0x3621E6e51F6E801dD8368d41ACA28D8e0F11C920";
 
       cryptoZombies = new web3.eth.Contract(cryptoZombiesABI, cryptoZombiesAddress);
 
@@ -710,9 +710,12 @@ button {
               <li>Wins: ${zombie.winCount}</li>
               <li>Losses: ${zombie.lossCount}</li>
               <li>Ready Time: ${zombie.readyTime}</li>
-              <li><img src="${zombieImageSrc}" alt="Zombie Level ${zombieLevel} Image" /></li>
             </ul>
-          </div>`);
+              <img src="${zombieImageSrc}" alt="Zombie Level ${zombieLevel} Image" 
+              style="transform: scale(0.5) translate(-50%, -50%); margin-bottom: -300px;"
+            />
+          </div>`
+          );
           });
       }
     }
