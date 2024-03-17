@@ -12,11 +12,11 @@ Front-End Improvement:
 * Added text input boxes and stylish buttons
 * Added background image to make website look nicer
 * Added zombie images that change with the level
+* Feed On Kitty
   
 Backend Improvement:  
 
   * Change Zombie Name
   * Change Zombie DNA
   * Transfer Zombie
-  * Feed On Kitty
   * Error message display on all functionalities 
