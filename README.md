@@ -11,6 +11,7 @@ Front-End Improvement:
 
 * Added text input boxes and stylish buttons
 * Added background image to make website look nicer
+* Added zombie images that change with the level
   
 Backend Improvement:  
 
