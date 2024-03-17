@@ -1,6 +1,9 @@
 pragma solidity 0.4.25;
 
-import "./ERC721.sol";
+import "./erc721.sol";
+import "./ownable.sol";
+import "./safemath.sol";
+
 
 contract CryptoKitties is ERC721 {
     struct Kitty {
@@ -26,7 +29,7 @@ contract CryptoKitties is ERC721 {
 
     function getKitty(uint256 _id) external view returns (uint256, uint256) {
         Kitty storage kit = kitties[_id];
-        return (kit.id, kit.genes);
+        return (_id, kit.genes);
     }
 
     function balanceOf(address _owner) external view returns (uint256) {
