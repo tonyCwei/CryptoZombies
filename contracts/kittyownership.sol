@@ -21,11 +21,11 @@ contract KittyOwnership is KittyBase, ERC721 {
 
     mapping (uint => address) kittyApprovals;
 
-    function balanceOf(address _owner) public view returns (uint256 _balance) {
+    function balanceOf(address _owner) external view returns (uint256 _balance) {
         return ownerKittyCount[_owner];
     }
 
-    function ownerOf(uint256 _tokenId) public view returns (address _owner) {
+    function ownerOf(uint256 _tokenId) external view returns (address _owner) {
         return kittyToOwner[_tokenId];
     }
 
@@ -36,12 +36,12 @@ contract KittyOwnership is KittyBase, ERC721 {
         emit Transfer(_from, _to, _tokenId);
     }
 
-    function transferFrom(address _from, address _to, uint256 _tokenId) public payable {
+    function transferFrom(address _from, address _to, uint256 _tokenId) external payable {
         require (kittyToOwner[_tokenId] == msg.sender || kittyApprovals[_tokenId] == msg.sender);
         _transfer(_from, _to, _tokenId);
     }
 
-    function approve(address _approved, uint256 _tokenId) public payable onlyOwnerOf(_tokenId) {
+    function approve(address _approved, uint256 _tokenId) external payable onlyOwnerOf(_tokenId) {
         kittyApprovals[_tokenId] = _approved;
         emit Approval(msg.sender, _approved, _tokenId);
     }
